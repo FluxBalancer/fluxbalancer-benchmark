@@ -1,0 +1,86 @@
+version: '3.9'
+services:
+  server1:
+    container_name: server1
+    build: .
+    ports:
+    - 8001:8001
+    environment:
+    - PORT=8001
+  server2:
+    container_name: server2
+    build: .
+    ports:
+    - 8002:8002
+    environment:
+    - PORT=8002
+  server3:
+    container_name: server3
+    build: .
+    ports:
+    - 8003:8003
+    environment:
+    - PORT=8003
+  server4:
+    container_name: server4
+    build: .
+    ports:
+    - 8004:8004
+    environment:
+    - PORT=8004
+  server5:
+    container_name: server5
+    build: .
+    ports:
+    - 8005:8005
+    environment:
+    - PORT=8005
+  server6:
+    container_name: server6
+    build: .
+    ports:
+    - 8006:8006
+    environment:
+    - PORT=8006
+  server7:
+    container_name: server7
+    build: .
+    ports:
+    - 8007:8007
+    environment:
+    - PORT=8007
+  server8:
+    container_name: server8
+    build: .
+    ports:
+    - 8008:8008
+    environment:
+    - PORT=8008
+  server9:
+    container_name: server9
+    build: .
+    ports:
+    - 8009:8009
+    environment:
+    - PORT=8009
+  server10:
+    container_name: server10
+    build: .
+    ports:
+    - 8010:8010
+    environment:
+    - PORT=8010
+  server11:
+    container_name: server11
+    build: .
+    ports:
+    - 8011:8011
+    environment:
+    - PORT=8011
+  server12:
+    container_name: server12
+    build: .
+    ports:
+    - 8012:8012
+    environment:
+    - PORT=8012
