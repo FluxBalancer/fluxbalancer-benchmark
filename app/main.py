@@ -16,7 +16,7 @@ def read_root():
 
 
 @app.get("/cpu")
-def cpu_burn(seconds: int = 10, complexity: int = 10_000):
+async def cpu_burn(seconds: int = 10, complexity: int = 10_000):
     """
     Нагружает процессор «пустыми» вычислениями.
 
@@ -28,14 +28,19 @@ def cpu_burn(seconds: int = 10, complexity: int = 10_000):
 
     end = time.time() + seconds
     while time.time() < end:
+        if await request.is_disconnected():
+            return {"cancelled": True, "port": os.getenv("PORT")}
+
         _ = sum(i * i for i in range(complexity))
         del _
+        await asyncio.sleep(0)
+
 
     return {"cpu_burn": f"completed {seconds}s × complexity={complexity}", "port": os.getenv("PORT")}
 
 
 @app.get("/mem")
-def mem_burn(mb: int = 100, seconds: int = 10):
+async def mem_burn(mb: int = 100, seconds: int = 10):
     """
     Выделяет mb мегабайт памяти и держит их seconds секунд.
 
@@ -48,8 +53,18 @@ def mem_burn(mb: int = 100, seconds: int = 10):
     chunk = 1024 * 1024
     data = [bytearray(chunk) for _ in range(mb)]
 
-    time.sleep(seconds)
+    while time.time() < end:
+        if await request.is_disconnected():
+            del data
+            gc.collect()
+            return {"cancelled": True, "port": os.getenv("PORT")}
+
+        await asyncio.sleep(0.1)
+
     del data
     gc.collect()
 
-    return {"mem_burn": f"allocated {mb} MB for {seconds}s", "port": os.getenv("PORT")}
+    return {
+        "mem_burn": f"allocated {mb} MB for {seconds}s",
+        "port": os.getenv("PORT")
+    }
