@@ -1,9 +1,11 @@
+import asyncio
 import gc
 import os
 import time
 
 import dotenv
 from fastapi import FastAPI, HTTPException
+from starlette.requests import Request
 
 app = FastAPI()
 
@@ -16,7 +18,11 @@ def read_root():
 
 
 @app.get("/cpu")
-async def cpu_burn(seconds: int = 10, complexity: int = 10_000):
+async def cpu_burn(
+        request: Request,
+        seconds: int = 10,
+        complexity: int = 10_000
+):
     """
     Нагружает процессор «пустыми» вычислениями.
 
@@ -35,12 +41,15 @@ async def cpu_burn(seconds: int = 10, complexity: int = 10_000):
         del _
         await asyncio.sleep(0)
 
-
     return {"cpu_burn": f"completed {seconds}s × complexity={complexity}", "port": os.getenv("PORT")}
 
 
 @app.get("/mem")
-async def mem_burn(mb: int = 100, seconds: int = 10):
+async def mem_burn(
+        request: Request,
+        mb: int = 100,
+        seconds: int = 10
+):
     """
     Выделяет mb мегабайт памяти и держит их seconds секунд.
 
@@ -52,6 +61,7 @@ async def mem_burn(mb: int = 100, seconds: int = 10):
 
     chunk = 1024 * 1024
     data = [bytearray(chunk) for _ in range(mb)]
+    end = time.time() + seconds
 
     while time.time() < end:
         if await request.is_disconnected():
