@@ -8,6 +8,7 @@ for i in range(1, N + 1):
     services[f"server{i}"] = {
         "container_name": f"server{i}",
         "build": ".",
+        "network_mode": "host",
         "env_file": [".env"],
         "ports": [f"{port}:{port}"],
         "environment": [f"PORT={port}"],

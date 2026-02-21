@@ -11,9 +11,8 @@ logger = logging.getLogger("metrics.pusher")
 
 
 class MetricsPusher:
-    def __init__(self, node_id: str, host: str, port: int, grpc_target: str):
+    def __init__(self, node_id: str, port: int, grpc_target: str):
         self.node_id = node_id
-        self.host = host
         self.port = port
         self.grpc_target = grpc_target
 
@@ -45,14 +44,11 @@ class MetricsPusher:
 
             msg = metrics_pb2.NodeMetrics(
                 node_id=self.node_id,
-                host=self.host,
                 port=int(self.port),
-                timestamp_unix_ms=ts,
                 cpu_util=float(cpu),
                 mem_util=float(mem),
                 net_in_bytes=net_in,
                 net_out_bytes=net_out,
-                latency_ms=0.0,
             )
 
             try:

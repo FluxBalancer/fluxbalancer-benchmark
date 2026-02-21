@@ -16,8 +16,9 @@ load_dotenv()
 
 SERVER_IP: str = settings.server.ip
 SERVER_PORT: int = settings.server.port
-PORT: int = settings.port
 TIME_INTERVAL = settings.time_interval
+
+HOST_PORT: int = settings.port
 
 
 @asynccontextmanager
@@ -25,12 +26,11 @@ async def lifespan(app: FastAPI):
     configure_logging()
 
     grpc_target = f"{SERVER_IP}:{SERVER_PORT}"
-    port = PORT
+    port = HOST_PORT
     node_id = os.getenv("NODE_ID", f"server_{port}")
 
     pusher = MetricsPusher(
         node_id=node_id,
-        host="127.0.0.1",
         port=port,
         grpc_target=grpc_target,
     )
