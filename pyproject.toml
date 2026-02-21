@@ -16,8 +16,14 @@ fastapi = "^0.129.0"
 python-dotenv = "^1.2.1"
 uvicorn = "^0.41.0"
 psutil = "^7.2.2"
-fluxbalancer-contracts = {path = "../fluxbalancer-contracts"}
+fluxbalancer-contracts = {git = "https://github.com/FluxBalancer/fluxbalancer-contracts.git"}
+pydantic-settings = "^2.13.1"
 
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[dependency-groups]
+dev = [
+    "pyyaml (>=6.0.3,<7.0.0)"
+]

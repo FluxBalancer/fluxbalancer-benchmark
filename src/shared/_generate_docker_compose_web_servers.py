@@ -1,6 +1,6 @@
 import yaml
 
-N = 12
+N = 1
 
 services = {}
 for i in range(1, N + 1):
@@ -8,14 +8,12 @@ for i in range(1, N + 1):
     services[f"server{i}"] = {
         "container_name": f"server{i}",
         "build": ".",
+        "env_file": [".env"],
         "ports": [f"{port}:{port}"],
-        "environment": [f"PORT={port}"]
+        "environment": [f"PORT={port}"],
     }
 
-compose = {
-    "version": "3.9",
-    "services": services
-}
+compose = {"services": services}
 
-with open("docker-compose_docker-servers.yml", "w") as f:
+with open("../docker-compose_docker-servers.yml", "w") as f:
     yaml.dump(compose, f, sort_keys=False)

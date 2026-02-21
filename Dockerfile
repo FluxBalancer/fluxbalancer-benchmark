@@ -16,4 +16,4 @@ RUN poetry config virtualenvs.create false && \
 
 COPY . .
 
-CMD ["sh", "-c", "poetry run uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8002} --forwarded-allow-ips='*' --proxy-headers"]
+CMD ["sh", "-c", "poetry run uvicorn src.main:app --host 0.0.0.0 --port ${PORT:-8002} --forwarded-allow-ips='*' --proxy-headers"]

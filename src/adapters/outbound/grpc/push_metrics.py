@@ -1,4 +1,5 @@
 import asyncio
+import logging
 import time
 
 import grpc.aio
@@ -6,9 +7,11 @@ import psutil
 from contracts.metrics import metrics_pb2
 from contracts.metrics import metrics_pb2_grpc
 
+logger = logging.getLogger("metrics.pusher")
+
 
 class MetricsPusher:
-    def __init__(self, node_id: str, host: str, port: str, grpc_target: str):
+    def __init__(self, node_id: str, host: str, port: int, grpc_target: str):
         self.node_id = node_id
         self.host = host
         self.port = port
@@ -17,8 +20,8 @@ class MetricsPusher:
         self.channel = grpc.aio.insecure_channel(
             grpc_target,
             options=[
-                ("grpc.keepalive_time_ms", 10000),
-                ("grpc.keepalive_timeout_ms", 5000),
+                ("grpc.keepalive_time_ms", 10_000),
+                ("grpc.keepalive_timeout_ms", 5_000),
                 ("grpc.keepalive_permit_without_calls", 1),
             ],
         )
@@ -52,12 +55,22 @@ class MetricsPusher:
                 latency_ms=0.0,
             )
 
-            batch = metrics_pb2.NodeMetricsBatch(items=[msg])
-
             try:
-                await self.stub.PushMetrics(batch, timeout=2)
+                response = await self.stub.PushMetrics(
+                    msg, timeout=1, wait_for_ready=True
+                )
+                logger.info(f"metrics ack: {response.ok}")
+
+            except grpc.aio.AioRpcError as e:
+                if e.code() == grpc.StatusCode.DEADLINE_EXCEEDED:
+                    logger.warning("gRPC timeout (server too slow or unavailable)")
+                elif e.code() == grpc.StatusCode.UNAVAILABLE:
+                    logger.warning("gRPC unavailable (server down or network issue)")
+                else:
+                    logger.exception("Unexpected gRPC error")
+
             except Exception as e:
-                print("metrics push failed:", repr(e))
+                logger.warning(f"metrics push failed: {e!r}")
 
             prev_net = net
             try:
