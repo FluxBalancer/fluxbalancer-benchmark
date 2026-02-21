@@ -1,3 +1,0 @@
-fastapi[standart]
-uvicorn
-python-dotenv

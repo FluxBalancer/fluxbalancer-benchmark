@@ -1,0 +1,23 @@
+[project]
+name = "fluxbalancer-benchmark"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "domster704",email = "domster704@mail.ru"}
+]
+readme = "README.md"
+
+[tool.poetry]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = ">=3.12"
+fastapi = "^0.129.0"
+python-dotenv = "^1.2.1"
+uvicorn = "^0.41.0"
+psutil = "^7.2.2"
+fluxbalancer-contracts = {path = "../fluxbalancer-contracts"}
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

@@ -1,11 +1,19 @@
-FROM python:3.9
+FROM python:3.12-slim
+
+ENV PYTHONFAULTHANDLER=1 \
+    PYTHONUNBUFFERED=1
+
+LABEL developer="domster704"
 
 WORKDIR /code
 
-COPY requirements.txt /code/requirements.txt
+RUN pip install --no-cache-dir poetry
 
-RUN pip install --no-cache-dir --upgrade -r /code/requirements.txt
+COPY poetry.lock pyproject.toml ./
 
-COPY app /code/app
+RUN poetry config virtualenvs.create false && \
+    poetry install --no-root --only main --no-interaction --no-ansi
 
-CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8002} --forwarded-allow-ips=* --proxy-headers"]
+COPY . .
+
+CMD ["sh", "-c", "poetry run uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8002} --forwarded-allow-ips='*' --proxy-headers"]
