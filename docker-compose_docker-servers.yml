@@ -2,9 +2,60 @@ services:
   server1:
     container_name: server1
     build: .
+    network_mode: host
     env_file:
-    - .env
+      - .env
     ports:
-    - 8001:8001
+      - 8001:8001
     environment:
-    - PORT=8001
+      - PORT=8001
+  server2:
+    container_name: server2
+    build: .
+    network_mode: host
+    env_file:
+      - .env
+    ports:
+      - 8002:8002
+    environment:
+      - PORT=8002
+  server3:
+    container_name: server3
+    build: .
+    network_mode: host
+    env_file:
+      - .env
+    ports:
+      - 8003:8003
+    environment:
+      - PORT=8003
+  server4:
+    container_name: server4
+    build: .
+    network_mode: host
+    env_file:
+      - .env
+    ports:
+      - 8004:8004
+    environment:
+      - PORT=8004
+  server5:
+    container_name: server5
+    build: .
+    network_mode: host
+    env_file:
+      - .env
+    ports:
+      - 8005:8005
+    environment:
+      - PORT=8005
+  server6:
+    container_name: server6
+    build: .
+    network_mode: host
+    env_file:
+      - .env
+    ports:
+      - 8006:8006
+    environment:
+      - PORT=8006
