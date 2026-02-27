@@ -1,5 +1,6 @@
 import asyncio
 import os
+import socket
 from contextlib import asynccontextmanager
 
 import uvicorn
@@ -27,7 +28,9 @@ async def lifespan(app: FastAPI):
 
     grpc_target = f"{SERVER_IP}:{SERVER_PORT}"
     port = HOST_PORT
-    node_id = os.getenv("NODE_ID", f"server_{port}")
+    hostname = socket.gethostname()
+    ip = socket.gethostbyname(hostname)
+    node_id = os.getenv("NODE_ID", f"{ip}_{port}")
 
     pusher = MetricsPusher(
         node_id=node_id,
