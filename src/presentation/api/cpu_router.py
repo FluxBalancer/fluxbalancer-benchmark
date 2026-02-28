@@ -1,6 +1,7 @@
 import asyncio
 import time
 
+import psutil
 from fastapi import APIRouter, HTTPException
 from starlette.requests import Request
 
@@ -30,9 +31,14 @@ async def cpu_burn(request: Request, seconds: int = 10, complexity: int = 10_000
 
             await asyncio.to_thread(cpu_chunk, chunk_start, chunk_end)
 
+    net_io = psutil.net_io_counters()
     return {
         "cpu_burn": True,
         "seconds": seconds,
         "complexity": complexity,
         "port": settings.port,
+        "cpu_util": psutil.cpu_percent(interval=None),
+        "mem_util": psutil.virtual_memory().percent,
+        "net_in_bytes": net_io.bytes_recv,
+        "net_out_bytes": net_io.bytes_sent,
     }

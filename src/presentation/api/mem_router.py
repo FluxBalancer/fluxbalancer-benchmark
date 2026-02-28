@@ -1,6 +1,7 @@
 import asyncio
 import time
 
+import psutil
 from fastapi import APIRouter, HTTPException
 from starlette.requests import Request
 
@@ -35,9 +36,14 @@ async def mem_burn(request: Request, mb: int = 100, seconds: int = 10):
 
     data.clear()
 
+    net_io = psutil.net_io_counters()
     return {
         "mem_burn": True,
         "mb": mb,
         "seconds": seconds,
         "port": settings.port,
+        "cpu_util": psutil.cpu_percent(interval=None),
+        "mem_util": psutil.virtual_memory().percent,
+        "net_in_bytes": net_io.bytes_recv,
+        "net_out_bytes": net_io.bytes_sent,
     }
