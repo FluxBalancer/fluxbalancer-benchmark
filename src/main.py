@@ -29,8 +29,7 @@ async def lifespan(app: FastAPI):
     grpc_target = f"{SERVER_IP}:{SERVER_PORT}"
     port = HOST_PORT
     hostname = socket.gethostname()
-    ip = socket.gethostbyname(hostname)
-    node_id = os.getenv("NODE_ID", f"{ip}_{port}")
+    node_id = os.getenv("NODE_ID", f"{hostname}_{port}")
 
     pusher = MetricsPusher(
         node_id=node_id,
