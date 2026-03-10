@@ -12,36 +12,34 @@ mem_router = APIRouter(prefix="/mem", tags=["mem"])
 
 
 def allocate_memory_mmap(mb: int):
-    chunk_size = 1024 * 1024
-    maps = []
+    size = mb * 1024 * 1024
+    page = 4096
 
-    for _ in range(mb):
-        m = mmap.mmap(-1, chunk_size)
-        m[0] = 1
-        maps.append(m)
+    m = mmap.mmap(-1, size)
 
-    return maps
+    for i in range(0, size, page):
+        m[i] = 1
 
-
+    return [m]
 @mem_router.get("")
 async def mem_burn(request: Request, mb: int = 100, seconds: int = 10):
     if mb <= 0 or seconds <= 0:
         raise HTTPException(status_code=400, detail="invalid params")
-
     maps = await asyncio.to_thread(allocate_memory_mmap, mb)
 
-    end = time.perf_counter() + seconds
+    try:
+        end = time.perf_counter() + seconds
 
-    while time.perf_counter() < end:
-        if await request.is_disconnected():
-            for m in maps:
-                m.close()
-            return {"cancelled": True, "port": settings.port}
+        while time.perf_counter() < end:
+            if await request.is_disconnected():
+                for m in maps:
+                    m.close()
+                return {"cancelled": True, "port": settings.port}
 
-        await asyncio.sleep(0.1)
-
-    for m in maps:
-        m.close()
+            await asyncio.sleep(0.1)
+    finally:
+        for m in maps:
+            m.close()
 
     net_io = psutil.net_io_counters()
     return {
