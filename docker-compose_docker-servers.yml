@@ -4,58 +4,64 @@ services:
     build: .
     network_mode: host
     env_file:
-      - .env
+    - .env
     ports:
-      - 8001:8001
+    - 8001:8001
     environment:
-      - PORT=8001
+    - PORT=8001
+    restart: always
   server2:
     container_name: server2
     build: .
     network_mode: host
     env_file:
-      - .env
+    - .env
     ports:
-      - 8002:8002
+    - 8002:8002
     environment:
-      - PORT=8002
+    - PORT=8002
+    restart: always
   server3:
     container_name: server3
     build: .
     network_mode: host
     env_file:
-      - .env
+    - .env
     ports:
-      - 8003:8003
+    - 8003:8003
     environment:
-      - PORT=8003
+    - PORT=8003
+    restart: always
   server4:
     container_name: server4
     build: .
     network_mode: host
     env_file:
-      - .env
+    - .env
     ports:
-      - 8004:8004
+    - 8004:8004
     environment:
-      - PORT=8004
+    - PORT=8004
+    restart: always
   server5:
     container_name: server5
     build: .
     network_mode: host
     env_file:
-      - .env
+    - .env
     ports:
-      - 8005:8005
+    - 8005:8005
     environment:
-      - PORT=8005
+    - PORT=8005
+    restart: always
   server6:
     container_name: server6
     build: .
     network_mode: host
     env_file:
-      - .env
+    - .env
     ports:
-      - 8006:8006
+    - 8006:8006
     environment:
-      - PORT=8006
+    - PORT=8006
+    restart: always

@@ -12,6 +12,7 @@ for i in range(1, N + 1):
         "env_file": [".env"],
         "ports": [f"{port}:{port}"],
         "environment": [f"PORT={port}"],
+        "restart": "always"
     }
 
 compose = {"services": services}
