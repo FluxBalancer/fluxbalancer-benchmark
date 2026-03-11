@@ -5,10 +5,13 @@ import time
 import psutil
 from fastapi import APIRouter, HTTPException
 from starlette.requests import Request
+from starlette.responses import Response
 
 from src.config.settings import settings
+from src.shared.node_id import get_node_id
 
 mem_router = APIRouter(prefix="/mem", tags=["mem"])
+NODE_ID = get_node_id()
 
 
 def allocate_memory_mmap(mb: int):
@@ -21,8 +24,15 @@ def allocate_memory_mmap(mb: int):
         m[i] = 1
 
     return [m]
+
+
 @mem_router.get("")
-async def mem_burn(request: Request, mb: int = 100, seconds: int = 10):
+async def mem_burn(
+        request: Request,
+        response: Response,
+        mb: int = 100,
+        seconds: int = 10
+):
     if mb <= 0 or seconds <= 0:
         raise HTTPException(status_code=400, detail="invalid params")
     maps = await asyncio.to_thread(allocate_memory_mmap, mb)
@@ -42,6 +52,7 @@ async def mem_burn(request: Request, mb: int = 100, seconds: int = 10):
             m.close()
 
     net_io = psutil.net_io_counters()
+    response.headers["X-Backend-Node"] = NODE_ID
     return {
         "mem_burn": True,
         "mb": mb,

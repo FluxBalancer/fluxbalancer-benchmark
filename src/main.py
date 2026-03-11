@@ -12,6 +12,7 @@ from src.config.settings import settings
 from src.presentation.api.cpu_router import cpu_router
 from src.presentation.api.mem_router import mem_router
 from src.shared.config_logging import configure_logging
+from src.shared.node_id import get_node_id
 
 load_dotenv()
 
@@ -28,8 +29,7 @@ async def lifespan(app: FastAPI):
 
     grpc_target = f"{SERVER_IP}:{SERVER_PORT}"
     port = HOST_PORT
-    hostname = socket.gethostname()
-    node_id = os.getenv("NODE_ID", f"{hostname}_{port}")
+    node_id = get_node_id()
 
     pusher = MetricsPusher(
         node_id=node_id,

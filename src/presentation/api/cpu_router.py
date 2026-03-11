@@ -4,10 +4,13 @@ import time
 import psutil
 from fastapi import APIRouter, HTTPException
 from starlette.requests import Request
+from starlette.responses import Response
 
 from src.config.settings import settings
+from src.shared.node_id import get_node_id
 
 cpu_router = APIRouter(prefix="/cpu", tags=["cpu"])
+NODE_ID = get_node_id()
 
 
 def cpu_chunk(start: int, end: int) -> None:
@@ -16,7 +19,12 @@ def cpu_chunk(start: int, end: int) -> None:
 
 
 @cpu_router.get("")
-async def cpu_burn(request: Request, seconds: int = 10, complexity: int = 10_000):
+async def cpu_burn(
+        request: Request,
+        response: Response,
+        seconds: int = 10,
+        complexity: int = 10_000
+):
     if seconds <= 0:
         raise HTTPException(status_code=400, detail="seconds must be > 0")
 
@@ -32,6 +40,7 @@ async def cpu_burn(request: Request, seconds: int = 10, complexity: int = 10_000
             await asyncio.to_thread(cpu_chunk, chunk_start, chunk_end)
 
     net_io = psutil.net_io_counters()
+    response.headers["X-Backend-Node"] = NODE_ID
     return {
         "cpu_burn": True,
         "seconds": seconds,
