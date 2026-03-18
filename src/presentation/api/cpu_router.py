@@ -33,7 +33,7 @@ async def cpu_workload(request, end_time, complexity=10_000):
 async def cpu_burn(
         request: Request,
         response: Response,
-        seconds: int = 10,
+        seconds: float = 10,
         complexity: int = 10_000,
 
         fail_rate: float = 0.05,

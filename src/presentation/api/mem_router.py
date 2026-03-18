@@ -44,7 +44,7 @@ async def mem_burn(
         request: Request,
         response: Response,
         mb: int = 100,
-        seconds: int = 10,
+        seconds: float = 10,
 
         fail_rate: float = 0.05,
         slow_rate: float = 0.1,
